@@ -1,0 +1,135 @@
+---
+params: 
+  title: ""
+  publication_date: ""
+  doi: ""
+output: 
+  html_document:
+    anchor_sections: false
+    theme: null
+    highlight: null
+    mathjax: null
+    css: ["style.css", "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700&display=swap"]
+    self_contained: true
+title: "`r params$title`"
+---
+
+```{r general-setup, include=FALSE}
+## This file contains the ENGLISH version of the data story
+
+# Set general chunk options
+knitr::opts_chunk$set(echo = FALSE, fig.showtext = TRUE, fig.retina = 3, 
+                      fig.align = "center", warning = FALSE, message = FALSE)
+
+# Install pacman package if needed
+if (!require("pacman")) {
+  install.packages("pacman")
+  library(pacman)
+}
+
+# Install snf.datastory package if not available, otherwise load it
+if (!require("snf.datastory")) {
+  if (!require("devtools")) {
+    install.packages("devtools")
+    library(devtools)
+  }
+  install_github("snsf-data/snf.datastory")
+  library(snf.datastory)
+}
+
+# Load packages
+p_load(tidyverse,
+       lubridate,
+       scales, 
+       conflicted, 
+       jsonlite,
+       here, 
+       ggiraph)
+
+# Conflict preferences
+conflict_prefer("filter", "dplyr")
+conflict_prefer("get_datastory_theme", "snf.datastory")
+conflict_prefer("get_datastory_scheme", "snf.datastory")
+
+# Increase showtext package font resolution
+showtext_opts(dpi = 320)
+
+# Set the locale for date formatting (Windows)
+Sys.setlocale("LC_TIME", "English")
+
+# Create function to print number with local language-specific format 
+print_num <- function(x) snf.datastory::print_num(x, lang = "en")
+
+# Knitr hook for local formatting of printed numbers
+knitr::knit_hooks$set(
+  inline <- function(x) {
+    if (!is.numeric(x)) {
+      x
+    } else {
+      print_num(x)
+    }
+  }
+)
+```
+
+```{r print-header-infos, results='asis'}
+# Add publication date to header
+cat(format(as_datetime(params$publication_date), "%d.%m.%Y"))
+
+# Register the Google font (same as Data Portal, is not loaded twice)
+cat(paste0("<link href='https://fonts.googleapis.com/css?family=", 
+           "Source+Sans+Pro:400,700&display=swap' rel='stylesheet'>"))
+```
+
+```{r story-specific-setup, include=FALSE}
+# Set story-specific variables etc. here
+
+# E.g. loading data...
+
+```
+
+
+<!-- Short lead (2-3 sentences) in bold -->
+
+__The SNSF publishes a substantial amount of data about its research grants. This data is available to everyone, to discover trends in science, or dig deep into specific topics of interest, such as analysing sustainability research.__
+
+In November 2021, a <a href="https://www.sdghackathon.io/" target="_blank">hackathon</a> to explore Swiss research related to the <a href="https://sdgs.un.org/goals" target="_blank">United Nations' Sustainable Development Goals</a> (SDGs) was organised by <a href="http://www.correlaid.ch/" target="_blank">CorrelAid Switzerland</a> and the <a href="http://cds.unibas.ch/" target="_blank">Center for Cognitive and Decision Sciences at the University of Basel</a>. Participants analysed publicly available SNSF grant data, including titles, keywords, abstracts, and disciplines of individual grants, along with basic demographics of grant recipients. They then developed data visualisations to illuminate various aspects of research on SDGs in Switzerland.
+
+The winners of the jury award for best visualisation looked at the percentage of female researchers contributing to each SDG. The audience award went to a visualisation that showed how many of the grants in each SDG came from each of the three main SNSF research areas, and how those grants were distributed across the biggest universities in Switzerland. All visualisations can be seen <a href="https://www.sdghackathon.io/hackathon-visualizations" target="_blank">here</a>. 
+
+A variety of <a href="https://data.snf.ch/datasets" target="_blank">datasets</a> are available for download on the SNSF Data Portal. These include grant abstracts, research publications, and use-inspired research output. If you discover interesting insights from SNSF data, we would love to hear about them!
+
+<div class="plot-box">
+
+<div class="hide-mobile hide-tablet" style="width: 800px;position: relative;max-width: 800px;left: -70px;border-top: 1px solid #d3d3d3;border-bottom: 1px solid #d3d3d3;padding-top: 20px;margin: 20px 0;">
+
+<div class="plot-title">Excerpt of the visualisations submitted to the SDG Hackathon: Visualizing Swiss Sustainability Research</div>
+
+```{r hackathon-gallery-desktop, out.width="100%", fig.height=6}
+knitr::include_graphics("hackathon_gallery.png")
+```
+
+<div class="caption">
+
+Excerpt of the visualisations submitted by the participants of the SDG Hackathon: Visualizing Swiss Sustainability Research based on SNSF open data, <a href="https://www.sdghackathon.io/hackathon-visualizations" target="_blank">click here to see all of them</a>.
+</div>
+
+</div>
+
+<div class="hide-desktop">
+
+<div class="plot-title">Excerpt of the visualisations submitted to the SDG Hackathon: Visualizing Swiss Sustainability Research</div>
+
+```{r hackathon-gallery-mobile, out.width="100%", fig.height=6}
+knitr::include_graphics("hackathon_gallery.png")
+```
+
+<div class="caption">
+Excerpt of the visualisations submitted by the participants of the SDG Hackathon: Visualizing Swiss Sustainability Research based on SNSF open data, <a href="https://www.sdghackathon.io/hackathon-visualizations" target="_blank">click here to see all of them</a>.
+</div>
+
+</div>
+</div>
+
+
+Data, text and code of this data story are <a href="https://github.com/snsf-data/datastory_sustainability_hackathon" target="_blank">available on Github</a> and <a href="https://doi.org/10.46446/datastory.sustainability-hackathon" target="_blank">archived on Zenodo</a>.<br>DOI: 10.46446/datastory.sustainability-hackathon
